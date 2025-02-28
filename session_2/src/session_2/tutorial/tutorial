@@ -1,0 +1,14 @@
+def main():
+    my_list:list[float]=[...]
+    my_tuple:tuple = (1,2,3)
+    my_set  :set[float]=[...]
+    def add_to_list(value):
+        my_list.append(value)
+    my_tuple = my_tuple + (4,)
+    add_to_list(2)
+    print(my_tuple)
+    lista = [number for number in range(10) if number % 2 is 0]
+    print(lista)
+    
+if __name__ == "__main__":
+    main()
