@@ -1,4 +1,4 @@
-import os
+
 from fastapi import FastAPI
 from session_12.models import Task
 
