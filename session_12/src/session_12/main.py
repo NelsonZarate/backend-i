@@ -1,22 +1,12 @@
 import os
 from fastapi import FastAPI
-from sqlmodel import SQLModel, create_engine
+from session_12.models import Task
 
 api = FastAPI(
     title="TDODO Etic_algarve API"
 )
 
-DB_USER = os.getenv("DB_USER",None) 
-DB_PASSWORD = os.getenv("DB_PASSWORD",None)
-DB_HOST = os.getenv("DB_HOST",None) 
-DB_PORT = os.getenv("DB_PORT",None)
-DB_NAME = os.getenv("DB_NAME",None)
-
-engine = create_engine(f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
-SQLModel.metadata.create_all(engine)
-
-
-@api.get("/task")
+@api.get("/task",response_model=Task)
 def list_task():
     pass
 
