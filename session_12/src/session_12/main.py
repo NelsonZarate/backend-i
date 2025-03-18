@@ -13,7 +13,7 @@ DB_PORT = os.getenv("DB_PORT",None)
 DB_NAME = os.getenv("DB_NAME",None)
 
 engine = create_engine(f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
-SQLModel.metadata.create_all(engine)©
+SQLModel.metadata.create_all(engine)
 
 
 @api.get("/task")
