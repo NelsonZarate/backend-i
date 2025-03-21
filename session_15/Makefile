@@ -2,7 +2,7 @@
 start:
 	poetry run python manage.py runserver
 
-migrate:
+migrate:migration
 	poetry run python manage.py migrate
 
 migration:
