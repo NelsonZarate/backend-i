@@ -17,3 +17,9 @@ newapp:
 
 test:
 	poetry run pytest
+
+compose.migrate:
+	docker compose run --rm	web poetry run python manage.py migrate
+
+compose.start:
+	docker compose up --build --force-recreate
