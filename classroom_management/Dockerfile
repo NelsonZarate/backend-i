@@ -14,4 +14,4 @@ EXPOSE 8000
 
 ENTRYPOINT [ "poetry" , "run" ]
 
-CMD [ "uvicorn", "classroom.wsgi" ]
+CMD [ "uvicorn", "classroom_management.asgi:application","--host","0.0.0.0","--port","8000" ]

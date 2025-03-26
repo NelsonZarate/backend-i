@@ -1,11 +1,11 @@
 [project]
-name = "classroom-managemet"
+name = "classroom-management"
 version = "0.1.0"
 description = ""
 authors = [
     {name = "Nelson Zarate",email = "nelsonpinto1415@gmail.com"}
 ]
-readme = "README.md"
+readme = "README.MD"
 requires-python = ">=3.12"
 dependencies = [
     "django (>=5.1.7,<6.0.0)",
@@ -17,8 +17,7 @@ dependencies = [
 ]
 
 [tool.poetry]
-#packages = [{include = "classroom_managemet", from = "src"}]
-
+packages = [{include = "classroom_management"}]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -9,5 +9,3 @@
  - psycopg2-binary (Postgres Driver for db connection)
  - pytest (Dev dependencie)
  - django-pytest (Dev dependencie)
-
-
