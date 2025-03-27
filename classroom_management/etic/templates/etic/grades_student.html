@@ -1,0 +1,10 @@
+<!-- etic/templates/etic/grades_student.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h2>Minhas Notas</h2>
+    <ul>
+        {% for grade in request.user.grades.all %}
+            <li>{{ grade.course.name }}: {{ grade.score }} - {{ grade.feedback }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

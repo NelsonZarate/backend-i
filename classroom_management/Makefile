@@ -20,9 +20,18 @@ newapp:
 test:
 	poetry run pytest
 
-compose.migrate:
+compose.migrations:
+	docker compose run --rm web poetry run python manage.py makemigrations
+
+compose.migrate:compose.migrations
 	docker compose run --rm web poetry run python manage.py migrate
+
 
 compose.start:
 	docker compose up --build --force-recreate
 
+compose.collectstatic:
+	docker compose exec web poetry run python manage.py collectstatic --noinput
+
+compose.createsuperuser:
+	docker compose exec web poetry run python manage.py createsuperuser
