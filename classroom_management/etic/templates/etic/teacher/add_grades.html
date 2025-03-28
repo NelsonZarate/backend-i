@@ -1,0 +1,20 @@
+
+{% extends "base.html" %}
+{% block content %}
+    <h2>Add Grade for {{ student.username }}</h2>
+    <h4>Course: {{ course.name }}</h4>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Score:</label>
+            <input type="number" name="score" step="0.1" min="0" max="10" required class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Feedback:</label>
+            <textarea name="feedback" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Grade</button>
+        <a href="{% url 'student_list' classroom.id %}" class="btn btn-secondary">Back</a>
+    </form>
+{% endblock %}

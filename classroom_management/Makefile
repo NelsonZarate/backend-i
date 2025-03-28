@@ -1,5 +1,6 @@
 install-dependencies:
-	poetry add django uvicorn sqlmodel psycopg2-binary pytest django-pytest
+	poetry add django uvicorn sqlmodel psycopg2-binary pytest django-pytest whitenoise 
+	poetry install
 
 start:
 	poetry run python manage.py runserver

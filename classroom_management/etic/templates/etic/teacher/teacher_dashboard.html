@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>My Classrooms</h2>
+    <ul>
+        {% for classroom in classrooms %}
+            <li>
+                <a href="{% url 'student_list' classroom.id %}">
+                    {{ classroom.name }}
+                </a>
+                ({{ classroom.courses.count }} courses)
+            </li>
+        {% empty %}
+            <li>No classrooms assigned</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

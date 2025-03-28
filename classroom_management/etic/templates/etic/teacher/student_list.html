@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Students in {{ classroom.name }}</h2>
+    <ul>
+        {% for student in object_list %}
+            <li>
+                {{ student.username }}
+                {% for course in classroom.courses.all %}
+                    <a href="{% url 'add_grade' course.id student.id %}" class="btn btn-sm btn-outline-primary">
+                        Add Grade ({{ course.name }})
+                    </a>
+                {% endfor %}
+            </li>
+        {% empty %}
+            <li>No students in this classroom</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

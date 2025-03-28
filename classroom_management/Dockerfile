@@ -14,5 +14,7 @@ EXPOSE 8000
 
 RUN poetry run python manage.py collectstatic --noinput
 
-ENTRYPOINT [ "poetry" , "run" ]
-CMD [ "uvicorn", "classroom_management.asgi:application","--host","0.0.0.0","--port","8000" ]
+VOLUME ["/app"]
+
+CMD [ "poetry" , "run" , "uvicorn", "classroom_management.asgi:application","--host","0.0.0.0","--port","8000" ]
+
