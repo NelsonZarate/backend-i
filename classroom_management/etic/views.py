@@ -11,6 +11,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.generic import View
 from django.db.models import Prefetch 
 from collections import defaultdict  
+import logging
 
 def signup_view(request):
     if request.method == "POST":
@@ -313,4 +314,3 @@ class StudentDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView
             'classmates': classmates,
         })
         return context
-    

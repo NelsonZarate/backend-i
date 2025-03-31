@@ -24,7 +24,7 @@ test:
 compose.migrations:
 	docker compose run --rm web poetry run python manage.py makemigrations
 
-compose.migrate:compose.migrations
+compose.migrate:
 	docker compose run --rm web poetry run python manage.py migrate
 
 
@@ -38,4 +38,5 @@ compose.createsuperuser:
 	docker compose exec web poetry run python manage.py createsuperuser
 
 compose.test:
-	docker compose exec web poetry run pytest
+	docker compose exec web poetry run python manage.py test
+	
