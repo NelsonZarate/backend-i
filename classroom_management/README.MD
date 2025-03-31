@@ -61,7 +61,7 @@ POSTGRES_PORT=5432
 
 ## Run the application with docker:
 ```bash 
-make compose.start
+make compose.setup
 ```
 
 ## Run the application local:

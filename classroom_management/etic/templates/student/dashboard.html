@@ -62,7 +62,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ stats.latest.course.name }}</h5>
                             <div class="card-text">
-                                <p><strong>Teacher:</strong> {{ stats.latest.course.teacher.get_full_name }}</p>
+                                <p><strong>Teacher:</strong> {{ course.teacher.get_full_name }}</p>
                                 <p><strong>Latest Grade:</strong> {{ stats.latest.score }}</p>
                                 <p><strong>Average:</strong> {{ stats.average|floatformat:2 }}</p>
                                 <p><strong>Total Grades:</strong> {{ stats.count }}</p>

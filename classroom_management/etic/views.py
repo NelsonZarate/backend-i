@@ -12,16 +12,44 @@ from django.views.generic import View
 from django.db.models import Prefetch 
 from collections import defaultdict  
 import logging
+logger = logging.getLogger('etic')
 
 def signup_view(request):
     if request.method == "POST":
         form = EticUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            logger.info(f"New user '{user.username}' registered with role '{user.role}'.")
             return redirect("admin_dashboard")
+        else:
+            logger.warning("User registration failed due to invalid form input.")
+    
     else:
         form = EticUserCreationForm()
+
     return render(request, "admin/admin_dashboard.html", {"form": form})
+
+def signin_view(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            logger.info(f"User '{user.username}' logged in successfully.")
+
+            if user.is_superuser or user.role == 'admin':
+                return redirect('admin_dashboard')
+            elif user.role == 'teacher':
+                return redirect('teacher_dashboard')
+            else:
+                return redirect('student_dashboard')
+        else:
+            logger.warning(f"Failed login attempt for username: {request.POST.get('username')}")
+
+    else:
+        form = AuthenticationForm(request)
+
+    return render(request, "registration/signin.html", {"form": form})
 
 def signin_view(request):
     if request.method == "POST":
@@ -49,18 +77,21 @@ def index_view(request):
 
 def is_teacher(user):
     return user.is_authenticated and user.role == "teacher"
-
 @login_required
 @user_passes_test(is_teacher)
 def add_grade(request, course_id, student_id):
     course = get_object_or_404(Course, id=course_id)
     student = get_object_or_404(User, id=student_id, role="student")
-    
+
     if request.method == "POST":
-        score = request.POST.get("score")
-        feedback = request.POST.get("feedback", "")
-        Grade.objects.create(student=student, course=course, score=score, feedback=feedback)
-        return redirect("course_detail", course_id=course.id)
+        try:
+            score = request.POST.get("score")
+            feedback = request.POST.get("feedback", "")
+            Grade.objects.create(student=student, course=course, score=score, feedback=feedback)
+            logger.info(f"Teacher '{request.user.username}' added grade {score} for student '{student.username}' in course '{course.name}'")
+            return redirect("course_detail", course_id=course.id)
+        except Exception as e:
+            logger.error(f"Error adding grade: {str(e)}", exc_info=True)
 
     return render(request, "teacher/add_grade.html", {"course": course, "student": student})
 
@@ -78,7 +109,10 @@ class StudentListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        student = self.request.user
         context['classroom'] = get_object_or_404(Classroom, pk=self.kwargs['pk'])
+        logger.info(f"Student '{student.username}' accessed their dashboard.")
+
         return context
 
 class AdminDashboardView(UserPassesTestMixin, View):
@@ -102,6 +136,8 @@ class AdminDashboardView(UserPassesTestMixin, View):
         return context
     
     def get(self, request, *args, **kwargs):
+
+        logger.info(f"Admin '{request.user.username}' accessed the admin dashboard.")
         return render(request, self.template_name, self.get_context_data())
     
     def post(self, request, *args, **kwargs):
@@ -110,7 +146,6 @@ class AdminDashboardView(UserPassesTestMixin, View):
             if form.is_valid():
                 form.save()
                 return redirect('admin_dashboard')
-        
 
         elif 'create_classroom' in request.POST:
             classroom_form = ClassroomForm(request.POST)
@@ -255,15 +290,27 @@ class DeleteCourseView(UserPassesTestMixin, DeleteView):
     model = Course
     template_name = 'admin/confirm_delete.html'
     success_url = reverse_lazy('admin_dashboard')
-    
+
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.role == 'admin'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['object_type'] = 'course'
         return context
 
+    def delete(self, request, *args, **kwargs):
+        course = self.get_object()
+        user = request.user
+
+        try:
+            logger.info(f"User {user} (ID: {user.id}) is deleting course: {course.name} (ID: {course.id})")
+            response = super().delete(request, *args, **kwargs)
+            logger.info(f"Course {course.name} (ID: {course.id}) successfully deleted by {user}.")
+            return response
+        except Exception as e:
+            logger.error(f"Error deleting course {course.name} (ID: {course.id}): {e}", exc_info=True)
+            return redirect(self.success_url)
 
 class StudentDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'student/dashboard.html'
