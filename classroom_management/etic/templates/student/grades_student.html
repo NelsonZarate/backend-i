@@ -1,4 +1,11 @@
 <!-- etic/templates/etic/grades_student.html -->
+{% block menu %}
+<div style="text-align: right;">
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+{% endblock menu %}
+
+
 {% extends "base.html" %}
 {% block content %}
     <h2>Minhas Notas</h2>

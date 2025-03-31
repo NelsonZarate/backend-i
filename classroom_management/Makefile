@@ -36,3 +36,6 @@ compose.collectstatic:
 
 compose.createsuperuser:
 	docker compose exec web poetry run python manage.py createsuperuser
+
+compose.test:
+	docker compose exec web poetry run pytest

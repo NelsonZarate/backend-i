@@ -11,10 +11,10 @@
  - django-pytest (Dev dependencie)
  - whitenoise (>=6.9.0,<7.0.0)  __For serving files through ASGI with debug False__
 
-
-
+## How to use
+ - make install-dependencies
+ 
 ## ENV
-
 .env
 - POSTGRES_DATABASE = 'dj_db'
 - POSTGRES_USER = 'postgres'

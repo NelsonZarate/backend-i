@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block menu %}
+<div style="text-align: right;">
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+{% endblock menu %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Student Dashboard</h1>
+            <h2>Welcome, {{ student.get_full_name|default:student.username }}</h2>
+        </div>
+    </div>
+
+    <!-- Classrooms Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3>Your Classrooms</h3>
+        </div>
+        <div class="card-body">
+            {% if classrooms %}
+            <div class="row">
+                {% for classroom in classrooms %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ classroom.name }}</h5>
+                            <div class="card-text">
+                                <p><strong>Courses:</strong></p>
+                                <ul class="list-group list-group-flush">
+                                    {% for course in classroom.courses.all %}
+                                    <li class="list-group-item">
+                                        {{ course.name }} ({{ course.teacher.get_full_name }})
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">You are not enrolled in any classrooms yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Grades Overview Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h3>Your Grades Summary</h3>
+        </div>
+        <div class="card-body">
+            {% if grades %}
+            <div class="row">
+                {% for course_id, stats in course_stats.items %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ stats.latest.course.name }}</h5>
+                            <div class="card-text">
+                                <p><strong>Teacher:</strong> {{ stats.latest.course.teacher.get_full_name }}</p>
+                                <p><strong>Latest Grade:</strong> {{ stats.latest.score }}</p>
+                                <p><strong>Average:</strong> {{ stats.average|floatformat:2 }}</p>
+                                <p><strong>Total Grades:</strong> {{ stats.count }}</p>
+                                <a href="#course-{{ course_id }}" class="btn btn-sm btn-outline-primary">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">You don't have any grades yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Detailed Grades by Course -->
+    {% for course_id, grade_list in grades_by_course.items %}
+    <div class="card mb-4" id="course-{{ course_id }}">
+        <div class="card-header">
+            <h4>{{ grade_list.0.course.name }} - Grade History</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Score</th>
+                            <th>Feedback</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for grade in grade_list %}
+                        <tr>
+                            <td>{{ grade.created_at|date:"M d, Y" }}</td>
+                            <td>{{ grade.score }}</td>
+                            <td>{{ grade.feedback|default:"No feedback" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Classmates Section -->
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h3>Your Classmates</h3>
+        </div>
+        <div class="card-body">
+            {% if classmates %}
+            <div class="row">
+                {% for classmate in classmates %}
+                <div class="col-md-3 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ classmate.get_full_name|default:classmate.username }}</h5>
+                            <div class="card-text">
+                                <p><small>Shared Classrooms:</small></p>
+                                {% for classroom in classmate.classrooms.all %}
+                                    {% if classroom in classrooms %}
+                                        <span class="badge bg-secondary">{{ classroom.name }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">You don't have any classmates in your classrooms.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

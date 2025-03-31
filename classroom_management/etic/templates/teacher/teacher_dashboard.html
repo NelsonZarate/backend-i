@@ -1,10 +1,17 @@
 {% extends "base.html" %}
+{% block menu %}
+<h1>Teacher Dashboard</h1>
+<div style="text-align: right;">
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+{% endblock menu %}
+
 {% block content %}
     <h2>My Classrooms</h2>
     <ul>
         {% for classroom in classrooms %}
             <li>
-                <a href="{% url 'student_list' classroom.id %}">
+                <a href="{% url 'classroom_students' classroom.id %}">
                     {{ classroom.name }}
                 </a>
                 ({{ classroom.courses.count }} courses)

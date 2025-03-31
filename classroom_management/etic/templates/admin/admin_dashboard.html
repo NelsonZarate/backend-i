@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block menu %}
+<h1>Admin Dashboard</h1>
+<div style="text-align: right;">
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+{% endblock menu %}
+
+{% block content %}
+<!-- User Creation Form -->
+<h2>Create New User</h2>
+<div style="border: 1px solid black; padding: 10px; display: inline-block;">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="create_user">Create User</button>
+    </form>
+</div>
+<br>
+
+<!-- Classroom Creation Form -->
+<h2>Create New Classroom</h2>
+<div style="border: 1px solid black; padding: 10px; display: inline-block;">
+    <form method="post">
+        {% csrf_token %}
+        {{ classroom_form.as_p }}
+        <button type="submit" name="create_classroom">Create Classroom</button>
+    </form>
+</div>
+<br>
+
+<!-- Course Creation Form -->
+<h2>Create New Course</h2>
+<div style="border: 1px solid black; padding: 10px; display: inline-block;">
+    <form method="post">
+        {% csrf_token %}
+        {{ course_form.as_p }}
+        <button type="submit" name="create_course">Create Course</button>
+    </form>
+</div>
+<br>
+
+<h2>Users Summary</h2>
+<p>Total Users: {{ all_users.count }}</p>
+<p>Teachers: {{ teachers.count }}</p>
+<p>Students: {{ students.count }}</p>
+<p>Admins: {{ admins.count }}</p>
+
+<h2>Teachers List</h2>
+<table border="1">
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Date Joined</th>
+    </tr>
+    {% for teacher in teachers %}
+    <tr>
+        <td>{{ teacher.username }}</td>
+        <td>{{ teacher.email }}</td>
+        <td>{{ teacher.date_joined|date:"Y-m-d" }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Classrooms List</h2>
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Students Count</th>
+        <th>Actions</th>
+    </tr>
+    {% for classroom in classrooms %}
+    <tr>
+        <td>{{ classroom.name }}</td>
+        <td>{{ classroom.students.count }}</td>
+        <td>
+            <a href="{% url 'edit_classroom' classroom.id %}">Edit</a> |
+            <a href="{% url 'delete_classroom' classroom.id %}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Courses List</h2>
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Teacher</th>
+        <th>Classroom</th>
+        <th>Actions</th>
+    </tr>
+    {% for course in courses %}
+    <tr>
+        <td>{{ course.name }}</td>
+        <td>{{ course.teacher.username }}</td>
+        <td>{{ course.classroom.name }}</td>
+        <td>
+            <a href="{% url 'edit_course' course.id %}">Edit</a> |
+            <a href="{% url 'delete_course' course.id %}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

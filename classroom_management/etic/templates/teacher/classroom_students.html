@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load dict_access %}  <!-- Load the custom filter -->
+
+{% block menu %}
+<div style="text-align: right;">
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+{% endblock menu %}
+
+{% block content %}
+    <h2>{{ classroom.name }} Students</h2>
+    <h4>Courses: 
+        {% for course in courses %}
+            <span class="badge bg-primary">{{ course.name }}</span>
+        {% endfor %}
+    </h4>
+
+    <table class="table" border="2">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Grades</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.username }}</td>
+                    <td>
+                        {% for course in courses %}
+                            <div>
+                                {{ course.name }}: 
+                                {% with grade=grades_by_student|get_item:student.id|get_item:course.id %}
+                                    {% if grade %}
+                                        {{ grade.score }} ({{ grade.feedback|default:"No feedback" }})
+                                    {% else %}
+                                        No grade
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for course in courses %}
+                            <a href="{% url 'add_grade' course.id student.id %}" 
+                               class="btn btn-sm btn-outline-primary mb-1">
+                                {% if grades_by_student|get_item:student.id|get_item:course.id %}
+                                    Edit Grade ({{ course.name }})
+                                {% else %}
+                                    Add Grade ({{ course.name }})
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No students in this classroom</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary">Back</a>
+{% endblock %}

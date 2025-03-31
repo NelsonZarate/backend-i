@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block menu %}
+<div style="text-align: right;">
+    <a href="{% url 'logout' %}" class="btn btn-outline-danger">Logout</a>
+</div>
+{% endblock menu %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Edit Course: {{ object.name }}</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Render form fields manually for better control -->
+                <div class="mb-3">
+                    <label for="id_name" class="form-label">Course Name</label>
+                    <input type="text" name="name" value="{{ form.name.value }}" class="form-control" id="id_name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_teacher" class="form-label">Teacher</label>
+                    <select name="teacher" class="form-select" id="id_teacher" required>
+                        {% for teacher in form.teacher.field.queryset %}
+                            <option value="{{ teacher.id }}" {% if teacher.id == form.teacher.value %}selected{% endif %}>
+                                {{ teacher.username }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_classroom" class="form-label">Classroom</label>
+                    <select name="classroom" class="form-select" id="id_classroom" required>
+                        {% for classroom in form.classroom.field.queryset %}
+                            <option value="{{ classroom.id }}" {% if classroom.id == form.classroom.value %}selected{% endif %}>
+                                {{ classroom.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

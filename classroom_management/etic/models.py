@@ -23,6 +23,9 @@ class User(AbstractUser):
     
     def is_student(self):
         return self.role == "student"
+    
+    def __str__(self):
+        return self.username
 
 class Classroom(models.Model):
     name = models.CharField(max_length=100)
@@ -31,6 +34,8 @@ class Classroom(models.Model):
         related_name="classrooms",
         limit_choices_to={"role": "student"}
     )
+    def __str__(self):
+        return self.name 
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
@@ -45,6 +50,8 @@ class Course(models.Model):
         on_delete=models.CASCADE,
         related_name="courses"
     )
+    def __str__(self):
+        return self.name
 
 class Grade(models.Model):
     student = models.ForeignKey(
@@ -66,3 +73,6 @@ class Grade(models.Model):
             super().save(*args, **kwargs)
         else:
             raise PermissionDenied("Teachers cannot grade themselves")
+        
+    def __str__(self):
+        return f"Grade #{self.id}"
